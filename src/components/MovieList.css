@@ -1,0 +1,30 @@
+/* Responsive grid — deterministic card counts per breakpoint (planning.md §6).
+   Mobile <600: 2 cols · Tablet 600–1024: 3 cols · Desktop >1024: 5 cols. */
+.movie-list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 600px) {
+  .movie-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1025px) {
+  .movie-list {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.movie-list__message {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem 1rem;
+  font-size: 1rem;
+}
+
+.movie-list__message--error {
+  color: var(--error);
+}

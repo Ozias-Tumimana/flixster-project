@@ -1,0 +1,20 @@
+.sort-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-control__label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.sort-control__select {
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #3a4150;
+  background-color: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+}

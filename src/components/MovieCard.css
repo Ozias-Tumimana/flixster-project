@@ -1,0 +1,97 @@
+.movie-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.movie-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+}
+
+/* Watched movies are visually dimmed. */
+.movie-card--watched .movie-card__poster {
+  filter: grayscale(0.7) brightness(0.7);
+}
+
+.movie-card__body {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.movie-card__poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.movie-card__poster--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2a2f3a;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.movie-card__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.6rem 0.7rem;
+}
+
+.movie-card__title {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.movie-card__rating {
+  flex-shrink: 0;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.movie-card__actions {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0 0.7rem 0.7rem;
+}
+
+.movie-card__toggle {
+  flex: 1;
+  padding: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #3a4150;
+  border-radius: 6px;
+  background-color: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.movie-card__toggle:hover {
+  color: var(--text);
+}
+
+.movie-card__toggle.is-active {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}

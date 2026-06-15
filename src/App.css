@@ -1,28 +1,45 @@
-.App {
-  text-align: center;
-}
-
-.App-header {
-  background-color: #282c34;
+.app {
+  min-height: 100vh;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
-  color: white;
-  padding: 20px;
+  flex-direction: column;
 }
 
-@media (max-width: 600px) {
-  .movie-card {
-    width: 100%;
-  }
+.app__main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  align-items: start;
+}
 
-  .search-bar {
-    flex-direction: column;
-    gap: 10px;
-  }
+.app__content {
+  min-width: 0;
+}
 
-  .search-bar form {
-    flex-direction: column;
+/* On narrow screens the sidebar stacks above the grid. */
+@media (max-width: 768px) {
+  .app__main {
+    grid-template-columns: 1fr;
   }
+}
+
+.app__load-more {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.app__load-more button {
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+
+.app__load-more button:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
