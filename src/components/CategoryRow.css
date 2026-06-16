@@ -1,0 +1,89 @@
+.category-row {
+  margin-bottom: 2rem;
+}
+
+.category-row__title {
+  margin: 0 0 0.75rem;
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.category-row__viewport {
+  position: relative;
+}
+
+.category-row__scroller {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0.25rem 0.1rem 0.5rem;
+  scrollbar-width: none;
+}
+
+.category-row__scroller::-webkit-scrollbar {
+  display: none;
+}
+
+/* Fixed-width cards so the row scrolls horizontally regardless of grid rules. */
+.category-row__item {
+  flex: 0 0 160px;
+  scroll-snap-align: start;
+}
+
+@media (min-width: 1025px) {
+  .category-row__item {
+    flex-basis: 180px;
+  }
+}
+
+/* Scroll arrows — float over the row edges; hidden when no more to scroll. */
+.category-row__arrow {
+  position: absolute;
+  top: 0;
+  bottom: 0.5rem;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  border: none;
+  color: var(--text);
+  background-color: rgba(var(--bg-rgb), 0.6);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.category-row__viewport:hover .category-row__arrow {
+  opacity: 1;
+}
+
+.category-row__arrow--left {
+  left: 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.category-row__arrow--right {
+  right: 0;
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.category-row__arrow.is-hidden {
+  display: none;
+}
+
+.category-row__message {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  padding: 1rem 0.1rem;
+}
+
+.category-row__message[role="alert"] {
+  color: var(--error);
+}
+
+/* Keep arrows reachable for keyboard users even without hover. */
+.category-row__arrow:focus-visible {
+  opacity: 1;
+}

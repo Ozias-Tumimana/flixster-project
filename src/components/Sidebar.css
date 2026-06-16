@@ -24,12 +24,18 @@
   gap: 0.5rem;
   padding: 0.55rem 0.7rem;
   border-radius: 8px;
-  border: 1px solid #3a4150;
+  border: 1px solid var(--border);
   background-color: transparent;
   color: var(--text-muted);
   font-size: 0.9rem;
   font-weight: 600;
   text-align: left;
+}
+
+.sidebar__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 .sidebar__btn:hover {
@@ -53,14 +59,10 @@
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-/* On narrow screens the sidebar becomes a horizontal bar above the grid. */
+/* On narrow screens the MobileNav drawer (hamburger) owns navigation, so the
+   inline sidebar panel is hidden entirely. */
 @media (max-width: 768px) {
-  .sidebar__nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  .sidebar__btn {
-    flex: 1;
-    min-width: 110px;
+  .sidebar {
+    display: none;
   }
 }

@@ -3,13 +3,15 @@ import "./SortControl.css";
 // Sort dropdown. Controlled by App's sortOption; sorting is a client-side
 // derived view (no refetch). Note: Load More is hidden while a sort is active,
 // since sorting only orders the currently-loaded movies.
-const SortControl = ({ sortOption, onChange }) => (
+// `id` is parameterized so the control can render twice (header + mobile drawer)
+// without colliding on a duplicate DOM id / label association.
+const SortControl = ({ sortOption, onChange, id = "sort-select" }) => (
   <div className="sort-control">
-    <label htmlFor="sort-select" className="sort-control__label">
+    <label htmlFor={id} className="sort-control__label">
       Sort by
     </label>
     <select
-      id="sort-select"
+      id={id}
       className="sort-control__select"
       value={sortOption}
       onChange={(e) => onChange(e.target.value)}

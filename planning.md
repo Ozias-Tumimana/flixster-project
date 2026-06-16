@@ -11,9 +11,11 @@ implements against; it is a living document — update it whenever an implementa
 ```
 App
 ├── Header
-│   ├── SearchBar
-│   └── SortControl
-├── Sidebar
+│   ├── (hamburger button → opens MobileNav; mobile only)
+│   ├── SearchBar     (icon that expands into a field)
+│   └── SortControl   (inline on desktop; hidden on mobile)
+├── Sidebar           (desktop view-switcher panel; hidden ≤768px)
+├── MobileNav         (mobile drawer: view-switcher nav + Sort; open via hamburger)
 ├── MovieList
 │   └── MovieCard   (one per movie; click sets selectedMovieId)
 ├── MovieModal      (rendered only when selectedMovieId !== null)
@@ -22,17 +24,21 @@ App
 
 | Component | Responsibility | Renders | Props (types) | State? |
 |---|---|---|---|---|
-| **App** | Owns nearly all app state; orchestrates data flow. | Layout shell: `Header`, `Sidebar`, `MovieList`, conditional `MovieModal`, `Footer`. | none (root) | Yes (all list/UI state) |
-| **Header** | App title; hosts search + sort. | title/logo, `<SearchBar>`, `<SortControl>`. | `searchQuery, onSearchChange, onSearchSubmit, onClearSearch, sortOption, onSortChange` | No |
-| **SearchBar** | Captures search text + submit/clear. | `<form>` w/ text `<input>`, submit + clear buttons. | `searchQuery:string, onChange, onSubmit, onClear` | No |
-| **SortControl** | Choose list ordering. | `<label>`+`<select>`. | `sortOption:string, onChange` | No |
-| **Sidebar** | All/Favorites/Watched filter. | `<aside>` w/ 3 filter buttons + counts. | `sidebarFilter, onFilterChange, favoritesCount, watchedCount` | No |
+| **App** | Owns nearly all app state; orchestrates data flow. | Layout shell: `Header`, `Sidebar`, `MovieList`, `MobileNav`, conditional `MovieModal`, `Footer`. | none (root) | Yes (all list/UI state, incl. `isMenuOpen`) |
+| **Header** | App title; hosts the hamburger (mobile), search + sort. | title/logo, hamburger `<button>` (mobile), `<SearchBar>`, `<SortControl>`. | `onSearchSubmit, onClearSearch, sortOption, onSortChange, onOpenMenu` | **Yes** (`isScrolled` only) |
+| **SearchBar** | Search icon that expands into a field. | collapsed: `Search` icon button; expanded: `<form>` w/ `<input>` + submit + close. | `onSubmit, onClear` | **Yes** (`term` + `expanded`, local) |
+| **SortControl** | Choose list ordering. | `<label>`+`<select>`. | `sortOption, onChange, id?` | No |
+| **Sidebar** | Desktop view-switcher (All/Favorites/Watched); hidden ≤768px. | `<aside>` w/ 3 filter buttons + counts (FILTERS from `filters.js`). | `sidebarFilter, onFilterChange, favoritesCount, watchedCount` | No |
+| **MobileNav** | Mobile drawer: view-switcher nav + Sort; opened by the hamburger. | overlay + slide-in `role="dialog"` panel: FILTERS nav w/ counts, `<SortControl>`. | `open, onClose, sidebarFilter, onFilterChange, favoritesCount, watchedCount, sortOption, onSortChange` | No |
 | **MovieList** | Renders derived (filtered+sorted) movies as a grid. | grid container, `.map`→`MovieCard`; empty-state message. | `movies, favorites, watched, onCardClick, onToggleFavorite, onToggleWatched, isLoading, error` | No |
 | **MovieCard** | One movie: poster/title/rating + fav/watched/open actions. | poster `<img>`, title, vote_average, favorite + watched toggle buttons. | `movie, isFavorite, isWatched, onClick, onToggleFavorite, onToggleWatched` | No |
 | **MovieModal** | Full details + trailer + AI recommendation. | `role="dialog"` overlay: backdrop, title, runtime, genres, release date, overview, YouTube `<iframe>`, AI insight; per-section loading/error. | `movieId, onClose, isFavorite, isWatched, onToggleFavorite, onToggleWatched` | **Yes** (its own fetch state) |
 | **Footer** | Attribution/credits. | `<footer>` w/ TMDb attribution + year. | none | No |
 
-9 components — satisfies the ≥5 requirement and covers every canonical name.
+Core components above satisfy the ≥5 requirement; the redesign adds discovery
+components (`Hero`, `CategoryRow(s)`, `GenreChips`, `Skeleton`, `YouTubePlayer`)
+and the `MobileNav` drawer. The mobile nav reuses `MovieModal`'s a11y pattern
+(Escape, Tab focus-trap, body scroll-lock, click-outside, focus-return).
 
 ---
 
@@ -179,5 +185,29 @@ _(filled in after implementation/testing in M9)_
 Base grid `display:grid; gap:1rem;` with explicit `grid-template-columns: repeat(N, 1fr)` per breakpoint
 (deterministic counts). Posters use `aspect-ratio: 2/3` to prevent layout jank while images load.
 
-**Dark palette (WCAG AA targets):** `--bg #0F1115`, `--surface #1B1F27`, `--text #F5F7FA` (~16:1),
-`--text-muted #B9C0CC` (~9:1), `--accent #FFC857` (~11:1), `--error #FF8A80` (~7:1).
+**Mobile header (≤768px).** A hamburger button appears in the header and opens the **MobileNav** drawer
+(view-switcher nav + Sort); the inline desktop **Sidebar** panel is `display:none`, and the header's
+inline Sort is hidden (the drawer carries it). Search is a **search icon that expands into a field** at
+all widths. Desktop (≥769px) keeps the 220px sidebar panel + inline Sort, no hamburger.
+
+**Hero image.** The hero billboard requests the TMDb `original` backdrop (not `w1280`) so it isn't
+upscaled/blurred on large displays, and uses `object-position: center 20%` so the wide, short desktop
+crop keeps faces/title. The modal header keeps `w1280` (its 16:9 box needs no more).
+
+**Dark palette (WCAG AA targets):** a single locked palette — **Amazon Prime Video**: `--bg #0F171E`,
+`--surface #1A242F`, `--text #FFFFFF` (~16:1 on surface), `--text-muted #AAB7C4` (~8:1), `--accent
+#00A8E1`, `--accent-ink #00121C`, `--error #FF8A80`. Body + muted text and accent-ink pass AA.
+
+---
+
+## 7. Theming
+
+**Single locked palette: Amazon Prime Video.** All color tokens are CSS custom properties in
+[src/index.css](src/index.css) `:root`; shape/shadow/type tokens live there too. `<html data-theme="prime">`
+is kept for self-documentation (there is no theme switching — an earlier multi-theme picker was removed).
+
+**`--bg-rgb` rule.** `:root` defines `--bg` **and** its RGB triplet `--bg-rgb`. Background-derived overlays
+(header gradient + scrolled bar, hero side-scrim and nav buttons, category-row arrows) use
+`rgba(var(--bg-rgb), X)` so opacity composites over the real background color. **Keep `--bg-rgb` in sync
+with `--bg`.** (Media/content overlays meant to stay constant — `#000` behind video, white glass hero/header
+controls, black modal/badge scrims — are intentionally left literal.)

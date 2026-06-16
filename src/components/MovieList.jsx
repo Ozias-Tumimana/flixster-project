@@ -1,4 +1,5 @@
 import MovieCard from "./MovieCard";
+import Skeleton from "./Skeleton";
 import "./MovieList.css";
 
 // Renders the already-derived (filtered + sorted) movie array as a responsive grid.
@@ -23,7 +24,7 @@ const MovieList = ({
   }
 
   if (isLoading && movies.length === 0) {
-    return <p className="movie-list__message">Loading movies…</p>;
+    return <Skeleton variant="grid" count={10} />;
   }
 
   if (movies.length === 0) {

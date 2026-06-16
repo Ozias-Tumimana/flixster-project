@@ -33,17 +33,20 @@ against a written spec the student authored *before* implementation.
 
 ```
 App  (owns all list/UI state + the single fetch effect)
-├── Header → SearchBar, SortControl
-├── Sidebar           (All / Favorites / Watched filter)
+├── Header → hamburger (mobile, → MobileNav), SearchBar (icon-expand), SortControl
+├── Sidebar           (desktop All / Favorites / Watched view-switcher; hidden ≤768px)
+├── MobileNav         (mobile drawer: same view-switcher + Sort; opened by hamburger)
 ├── MovieList → MovieCard   (click → selectedMovieId)
 ├── MovieModal        (mounted only when selectedMovieId !== null; owns its own fetch state)
 └── Footer
 ```
 
 - **State lives in App** (`movies`, `searchQuery`, `mode`, `page`, `totalPages`, `sortOption`,
-  `selectedMovieId`, `isLoading`, `error`, `favorites`, `watched`, `sidebarFilter`). **MovieModal
-  owns only its own fetch state** (`details`, `detailsLoading`, `detailsError`, `trailerKey`,
-  `aiInsight`, `loadingInsight`).
+  `selectedMovieId`, `isLoading`, `error`, `favorites`, `watched`, `sidebarFilter`, `isMenuOpen`).
+  Exceptions: **MovieModal** owns its own fetch state (`details`, `detailsLoading`, `detailsError`,
+  `trailerKey`, `aiInsight`, `loadingInsight`); **SearchBar** owns its local `term` + `expanded`
+  (only the committed query bubbles up). `MobileNav` and `Sidebar` share `FILTERS` from
+  [src/components/filters.js](src/components/filters.js).
 - **One fetch effect** keyed on `[mode, searchQuery, page]`; branches on `mode`; appends
   (de-duped by id via `mergeDedupe`) when `page > 1`, else replaces.
 - **Sort + sidebar filter are client-side derived** (`useMemo` → `displayedMovies`), never stored
@@ -59,6 +62,14 @@ App  (owns all list/UI state + the single fetch effect)
 
 - **Components:** one `.jsx` + co-located `.css` per component in [src/components/](src/components/).
   Functional components with hooks; arrow-function components; default export.
+- **Theming:** single locked palette (Amazon Prime Video) — all color tokens in `:root` of
+  [src/index.css](src/index.css); see planning.md §7. Use the color tokens, never raw hex.
+  Background-derived overlays must use `rgba(var(--bg-rgb), X)`, and **`--bg-rgb` must stay in sync with
+  `--bg`**. (Media/content overlays that should stay constant — `#000` behind video, white glass
+  hero/header controls, black modal/badge scrims — are intentionally literal.)
+- **Responsive nav:** desktop (≥769px) shows the `Sidebar` panel + inline `SortControl`; mobile (≤768px)
+  hides both and uses the header hamburger → `MobileNav` drawer, which reuses `MovieModal`'s a11y pattern
+  (Escape, Tab focus-trap, body scroll-lock, click-outside, focus-return via App's `lastTriggerRef`).
 - **Env:** `VITE_API_KEY` (TMDb, present) and `VITE_OPENROUTER_API_KEY` (OpenRouter, must be added
   by the user). `VITE_*` vars ship to the client bundle — never hardcode a key in source, never
   paste a real key into chat or commit it. `.env` is gitignored.

@@ -1,0 +1,124 @@
+.mobilenav-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 100; /* above the sticky header (z-index: 50) */
+  animation: mobilenav-overlay-in 0.2s ease both;
+}
+
+.mobilenav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(300px, 82vw);
+  padding: 1.25rem;
+  background-color: var(--surface);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  /* Slide in from the left; neutralized to instant under prefers-reduced-motion
+     by the global rule in index.css. */
+  animation: mobilenav-slide-in 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes mobilenav-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mobilenav-slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.mobilenav__close {
+  align-self: flex-end;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--surface-2);
+  color: var(--text);
+}
+
+.mobilenav__heading {
+  margin: 0;
+  font-size: var(--fs-lg);
+  color: var(--text);
+}
+
+.mobilenav__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobilenav__btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background-color: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  text-align: left;
+}
+
+.mobilenav__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.mobilenav__btn:hover {
+  color: var(--text);
+}
+
+.mobilenav__btn.is-active {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.mobilenav__count {
+  font-size: var(--fs-sm);
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 999px;
+  padding: 0.05rem 0.55rem;
+}
+
+.mobilenav__btn.is-active .mobilenav__count {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Sort sits below the nav, divided like the modal's sections. */
+.mobilenav__sort {
+  border-top: 1px solid var(--surface-2);
+  padding-top: 1rem;
+}
+
+/* The drawer is a mobile affordance only; never show it on desktop even if
+   state somehow leaks open. */
+@media (min-width: 769px) {
+  .mobilenav-overlay {
+    display: none;
+  }
+}

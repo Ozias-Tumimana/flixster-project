@@ -1,16 +1,12 @@
 .movie-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   background-color: var(--surface);
-  border-radius: 10px;
+  border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.movie-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 /* Watched movies are visually dimmed. */
@@ -18,15 +14,28 @@
   filter: grayscale(0.7) brightness(0.7);
 }
 
-.movie-card__body {
-  display: block;
-  width: 100%;
+/* Stretched click target covering the whole card (opens the modal).
+   Sits below the toggle buttons so they remain clickable. */
+.movie-card__link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   padding: 0;
   border: none;
   background: none;
-  color: inherit;
   cursor: pointer;
-  text-align: left;
+}
+
+.movie-card__poster-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Title/rating and toggles render above the stretched link. */
+.movie-card__info,
+.movie-card__actions {
+  position: relative;
+  z-index: 2;
 }
 
 .movie-card__poster {
@@ -40,9 +49,91 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #2a2f3a;
+  background-color: var(--surface-2);
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: var(--fs-sm);
+}
+
+/* Badges (feature F). */
+.movie-card__rank {
+  position: absolute;
+  bottom: -0.4rem;
+  left: 0.3rem;
+  font-size: 3.2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--bg);
+  -webkit-text-stroke: 2px var(--accent);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.movie-card__badges {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.movie-card__badge {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 0.18rem 0.4rem;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.movie-card__badge--new {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.movie-card__badge--top {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+/* Hover/focus overlay (feature E). Hidden by default; revealed on hover or
+   keyboard focus so the content is reachable without a pointer. */
+.movie-card__hover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.7rem;
+  background-image: var(--scrim-bottom);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none; /* let clicks fall through to the stretched link */
+}
+
+.movie-card__overview {
+  margin: 0;
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  color: var(--text);
+  /* Clamp to keep the overlay tidy. */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.movie-card__cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--accent);
 }
 
 .movie-card__info {
@@ -56,11 +147,15 @@
 .movie-card__title {
   margin: 0;
   font-size: 0.95rem;
+  font-weight: 600;
   line-height: 1.25;
   color: var(--text);
 }
 
 .movie-card__rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
   flex-shrink: 0;
   color: var(--accent);
   font-weight: 700;
@@ -74,12 +169,16 @@
 }
 
 .movie-card__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
   flex: 1;
   padding: 0.4rem;
   font-size: 0.75rem;
   font-weight: 600;
-  border: 1px solid #3a4150;
-  border-radius: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   background-color: transparent;
   color: var(--text-muted);
   cursor: pointer;
@@ -94,4 +193,21 @@
   background-color: var(--accent);
   color: var(--accent-ink);
   border-color: var(--accent);
+  /* Feature L: pop when toggled on (keyframe defined in index.css). */
+  animation: card-toggle-pop 0.28s ease;
+}
+
+/* Lift + reveal only on devices that truly hover (not touch). Keeps the
+   always-visible toggle buttons as the touch affordance (spec-safe). */
+@media (hover: hover) {
+  .movie-card:hover,
+  .movie-card:focus-within {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .movie-card:hover .movie-card__hover,
+  .movie-card:focus-within .movie-card__hover {
+    opacity: 1;
+  }
 }

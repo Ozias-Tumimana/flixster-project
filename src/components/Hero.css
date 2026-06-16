@@ -1,0 +1,225 @@
+.hero {
+  position: relative;
+  width: 100%;
+  height: clamp(360px, 52vw, 640px);
+  margin-bottom: 2rem;
+  overflow: hidden;
+  background-color: #000;
+}
+
+/* Media layer (trailer iframe or backdrop image). */
+.hero__media {
+  position: absolute;
+  inset: 0;
+}
+
+.hero__backdrop,
+.hero__trailer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
+}
+
+/* Bias the crop upward so faces/title survive the wide, short desktop letterbox
+   (object-fit: cover otherwise center-crops the top third). */
+.hero__backdrop {
+  object-position: center 20%;
+}
+
+/* Scale the iframe up so the 16:9 video covers the hero box (not the viewport)
+   without letterboxing. Sized off the container via %, so the clamp()-ed hero
+   height can't expose black bars. */
+.hero__trailer {
+  top: 50%;
+  left: 50%;
+  width: max(100%, 177.78vh);
+  height: max(100%, 56.25vw);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+      to right,
+      rgba(var(--bg-rgb), 0.92) 0%,
+      rgba(var(--bg-rgb), 0.55) 45%,
+      rgba(var(--bg-rgb), 0) 75%
+    ),
+    var(--scrim-bottom);
+}
+
+/* Content layer. */
+.hero__content {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  max-width: 640px;
+  padding: 1.5rem clamp(1.25rem, 4vw, 3rem) 2.5rem;
+  z-index: 2;
+}
+
+.hero__text {
+  margin-bottom: 1.1rem;
+}
+
+.hero__title {
+  margin: 0 0 0.6rem;
+  font-size: var(--fs-hero);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.hero__meta {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.hero__rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--accent);
+}
+
+.hero__overview {
+  margin: 0 0 1.1rem;
+  color: var(--text);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hero__actions {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.hero__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: var(--fs-base);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.hero__btn--primary {
+  padding: 0.7rem 1.5rem;
+  background-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.hero__btn--primary:hover {
+  transform: scale(1.04);
+}
+
+.hero__btn--icon {
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Large prev/next navigation arrows (Prime/Netflix style). */
+.hero__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 999px;
+  border: none;
+  color: var(--text);
+  background-color: rgba(var(--bg-rgb), 0.55);
+  opacity: 0;
+  transition: opacity 0.18s ease, background-color 0.15s ease;
+}
+
+.hero:hover .hero__nav,
+.hero__nav:focus-visible {
+  opacity: 1;
+}
+
+.hero__nav:hover {
+  background-color: rgba(var(--bg-rgb), 0.85);
+}
+
+.hero__nav--prev {
+  left: clamp(0.5rem, 2vw, 1.25rem);
+}
+
+.hero__nav--next {
+  right: clamp(0.5rem, 2vw, 1.25rem);
+}
+
+/* Touch devices have no hover — keep the arrows visible there. */
+@media (hover: none) {
+  .hero__nav {
+    opacity: 1;
+  }
+}
+
+.hero__btn--icon.is-active {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  animation: card-toggle-pop 0.28s ease; /* shared pop keyframe (feature L) */
+}
+
+/* Slide indicators. */
+.hero__dots {
+  position: absolute;
+  right: clamp(1.25rem, 4vw, 3rem);
+  bottom: 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 3;
+}
+
+.hero__dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  padding: 0;
+  border-radius: 999px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.4);
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.hero__dot.is-active {
+  background-color: var(--accent);
+  transform: scale(1.25);
+}
+
+@media (max-width: 600px) {
+  .hero__content {
+    max-width: 100%;
+  }
+  /* Hide the dots row from overlapping content on very small screens. */
+  .hero__dots {
+    bottom: 0.75rem;
+  }
+}

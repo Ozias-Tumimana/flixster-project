@@ -1,7 +1,22 @@
+/* Collapsed state: a glass search icon (matches the hamburger), legible over
+   the bright hero while the header is still transparent. */
+.search-bar__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.15);
+  color: var(--text);
+}
+
 .search-bar {
   display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 
 .search-bar__input {
@@ -9,7 +24,7 @@
   min-width: 180px;
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
-  border: 1px solid #3a4150;
+  border: 1px solid var(--border);
   background-color: var(--surface);
   color: var(--text);
   font-size: 0.95rem;
@@ -28,12 +43,28 @@
   font-weight: 700;
 }
 
-.search-bar__btn--ghost {
+/* Close/collapse the expanded field. */
+.search-bar__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  border: 1px solid var(--border);
   background-color: transparent;
   color: var(--text-muted);
-  border: 1px solid #3a4150;
 }
 
-.search-bar__btn--ghost:hover {
+.search-bar__close:hover {
   color: var(--text);
+}
+
+/* On a narrow header the expanded field must be allowed to shrink instead of
+   overflowing the single nowrap row. */
+@media (max-width: 768px) {
+  .search-bar__input {
+    min-width: 0;
+  }
 }

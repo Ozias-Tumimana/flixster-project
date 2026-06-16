@@ -1,12 +1,45 @@
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 50; /* below the modal overlay (z-index: 100) */
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid #242a35;
-  background-color: var(--surface);
+  border-bottom: 1px solid transparent;
+  /* Transparent over the hero; fades to solid on scroll. */
+  background-color: transparent;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(var(--bg-rgb), 0.85),
+    rgba(var(--bg-rgb), 0)
+  );
+  transition: background-color 0.25s ease, border-color 0.25s ease,
+    backdrop-filter 0.25s ease;
+}
+
+.header--scrolled {
+  background-image: none;
+  background-color: rgba(var(--bg-rgb), 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom-color: var(--surface-2);
+}
+
+/* Hamburger — hidden on desktop, shown on mobile. Glass styling so it reads
+   over the bright hero while the header is still transparent. */
+.header__menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.15);
+  color: var(--text);
 }
 
 .header__brand {
@@ -15,14 +48,23 @@
 }
 
 .header__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   margin: 0;
-  font-size: 1.6rem;
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--text);
+}
+
+.header__title svg {
+  color: var(--accent);
 }
 
 .header__tagline {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   color: var(--text-muted);
 }
 
@@ -34,4 +76,27 @@
   flex: 1;
   justify-content: flex-end;
   min-width: 260px;
+}
+
+/* Mobile: hamburger appears, the inline Sort moves into the drawer, and the
+   tagline is dropped so the bar stays a single tidy row. */
+@media (max-width: 768px) {
+  .header {
+    flex-wrap: nowrap;
+    gap: 0.6rem;
+    padding: 0.85rem 1rem;
+  }
+  .header__menu-btn {
+    display: inline-flex;
+  }
+  .header__tagline {
+    display: none;
+  }
+  .header__controls {
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+  .header__controls .sort-control {
+    display: none;
+  }
 }

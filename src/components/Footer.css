@@ -1,6 +1,6 @@
 .footer {
   padding: 1.25rem;
-  border-top: 1px solid #242a35;
+  border-top: 1px solid var(--surface-2);
   text-align: center;
 }
 

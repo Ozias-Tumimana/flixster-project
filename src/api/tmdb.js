@@ -14,8 +14,10 @@ export function posterUrl(path) {
   return path ? `${IMG_BASE}/${POSTER_SIZE}${path}` : null;
 }
 
-export function backdropUrl(path) {
-  return path ? `${IMG_BASE}/${BACKDROP_SIZE}${path}` : null;
+// `size` defaults to w1280 (modal header); the hero passes "original" so the
+// full-bleed billboard isn't upscaled/blurred on large displays.
+export function backdropUrl(path, size = BACKDROP_SIZE) {
+  return path ? `${IMG_BASE}/${size}${path}` : null;
 }
 
 // Maps an HTTP status to a friendly message shown in the UI.
@@ -49,6 +51,29 @@ export function searchMovies(query, page = 1) {
 
 export function fetchMovieDetails(id) {
   const url = `${TMDB_BASE}/movie/${id}?api_key=${API_KEY}&language=en-US&append_to_response=videos`;
+  return getJson(url);
+}
+
+// --- Discovery endpoints (category rows + genre chips) ---
+
+export function fetchTopRated(page = 1) {
+  const url = `${TMDB_BASE}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=${page}`;
+  return getJson(url);
+}
+
+export function fetchTrending() {
+  const url = `${TMDB_BASE}/trending/movie/week?api_key=${API_KEY}&language=en-US`;
+  return getJson(url);
+}
+
+export function fetchPopular(page = 1) {
+  const url = `${TMDB_BASE}/movie/popular?api_key=${API_KEY}&language=en-US&page=${page}`;
+  return getJson(url);
+}
+
+// Returns the TMDb genre list as [{ id, name }, ...].
+export function fetchGenres() {
+  const url = `${TMDB_BASE}/genre/movie/list?api_key=${API_KEY}&language=en-US`;
   return getJson(url);
 }
 

@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { X, Sparkles, Heart, Eye, Star } from "lucide-react";
 import { fetchMovieDetails, pickTrailerKey, backdropUrl } from "../api/tmdb";
 import { getMovieInsight } from "../api/openrouter";
+import YouTubePlayer from "./YouTubePlayer";
 import "./MovieModal.css";
 
 // Formats TMDb runtime (minutes) as "2h 15m".
@@ -136,7 +138,7 @@ const MovieModal = ({
           ref={closeBtnRef}
           aria-label="Close details"
         >
-          ✕
+          <X size={18} aria-hidden="true" />
         </button>
 
         {detailsLoading && <p className="modal__message">Loading details…</p>}
@@ -150,11 +152,13 @@ const MovieModal = ({
         {details && (
           <>
             {backdrop && (
-              <img
-                className="modal__backdrop"
-                src={backdrop}
-                alt={`Backdrop for ${details.title}`}
-              />
+              <div className="modal__backdrop-wrap">
+                <img
+                  className="modal__backdrop"
+                  src={backdrop}
+                  alt={`Backdrop for ${details.title}`}
+                />
+              </div>
             )}
 
             <div className="modal__content">
@@ -167,7 +171,10 @@ const MovieModal = ({
                 <span>·</span>
                 <span>{details.release_date || "Release date unknown"}</span>
                 <span>·</span>
-                <span>★ {details.vote_average?.toFixed(1) ?? "—"}</span>
+                <span className="modal__rating">
+                  <Star size={15} fill="currentColor" aria-hidden="true" />{" "}
+                  {details.vote_average?.toFixed(1) ?? "—"}
+                </span>
               </div>
 
               {details.genres?.length > 0 && (
@@ -187,7 +194,12 @@ const MovieModal = ({
                   aria-pressed={isFavorite}
                   onClick={onToggleFavorite}
                 >
-                  {isFavorite ? "♥" : "♡"} Favorite
+                  <Heart
+                    size={16}
+                    fill={isFavorite ? "currentColor" : "none"}
+                    aria-hidden="true"
+                  />{" "}
+                  Favorite
                 </button>
                 <button
                   type="button"
@@ -195,7 +207,7 @@ const MovieModal = ({
                   aria-pressed={isWatched}
                   onClick={onToggleWatched}
                 >
-                  {isWatched ? "✓" : "○"} Watched
+                  <Eye size={16} aria-hidden="true" /> Watched
                 </button>
               </div>
 
@@ -205,11 +217,12 @@ const MovieModal = ({
 
               {trailerKey ? (
                 <div className="modal__trailer">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${trailerKey}`}
+                  <YouTubePlayer
+                    videoId={trailerKey}
+                    muted
+                    controls
+                    poster={backdrop}
                     title={`${details.title} trailer`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
                   />
                 </div>
               ) : (
@@ -217,7 +230,9 @@ const MovieModal = ({
               )}
 
               <section className="modal__ai" aria-label="AI watch recommendation">
-                <h3 className="modal__ai-heading">✨ Watch Recommendation</h3>
+                <h3 className="modal__ai-heading">
+                  <Sparkles size={16} aria-hidden="true" /> Watch Recommendation
+                </h3>
                 {aiInsight ? (
                   <p className="modal__ai-text">{aiInsight}</p>
                 ) : loadingInsight ? (

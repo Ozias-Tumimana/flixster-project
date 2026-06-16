@@ -1,0 +1,78 @@
+/* Shimmer loaders (feature G). */
+.skeleton,
+.skeleton__poster,
+.skeleton__line {
+  background: linear-gradient(
+    100deg,
+    var(--surface) 30%,
+    var(--surface-2) 50%,
+    var(--surface) 70%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Card skeleton reuses the grid's column layout via the .movie-list class. */
+.skeleton--card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: none; /* the inner blocks shimmer, not the container */
+  animation: none;
+}
+
+.skeleton__poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius);
+}
+
+.skeleton__line {
+  height: 0.7rem;
+  border-radius: 999px;
+  margin: 0.5rem 0.1rem 0;
+}
+
+.skeleton__line--title {
+  width: 80%;
+}
+
+.skeleton__line--meta {
+  width: 40%;
+}
+
+/* Horizontal strip for category rows. */
+.skeleton-row {
+  display: flex;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.skeleton-row .skeleton--card {
+  flex: 0 0 160px;
+}
+
+/* Hero billboard skeleton. */
+.skeleton--hero {
+  width: 100%;
+  height: clamp(320px, 56vw, 560px);
+  border-radius: 0;
+}
+
+/* Respect reduced motion: hold a static muted block instead of shimmering. */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .skeleton__poster,
+  .skeleton__line {
+    animation: none;
+    background: var(--surface-2);
+  }
+}
