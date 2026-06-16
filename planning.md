@@ -158,7 +158,10 @@ const buildUserPrompt = ({ title, genres, overview }) =>
   `Title: ${title}\nGenres: ${genres || "Unknown"}\nOverview: ${overview || "No overview available."}\n\nWrite the recommendation now.`;
 ```
 
-Body: `{ model: "meta-llama/llama-3.3-70b-instruct:free", messages:[system,user], temperature:0.7, max_tokens:160 }`.
+Body: `{ models: FREE_MODELS, messages:[system,user], temperature:0.7, max_tokens:160 }`, where
+`FREE_MODELS` is a priority-ordered list of `:free` slugs. OpenRouter's `models` array auto-falls-through
+to the next when one is down/rate-limited/errors (there is no single auto-free slug; `openrouter/auto` is
+paid), so the app uses whichever free model is currently available, then `FALLBACK_INSIGHT` if all fail.
 Parse `data?.choices?.[0]?.message?.content?.trim()` → fallback on empty. **Trigger:** lazy — a
 "Get AI Recommendation" button (saves free-tier quota, avoids a 429 on every modal open), so
 `loadingInsight` init `false` until click. Reset on close (modal unmounts).
