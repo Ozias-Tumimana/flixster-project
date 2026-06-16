@@ -190,15 +190,6 @@
   font-style: italic;
 }
 
-.modal__ai-btn {
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: none;
-  background-color: var(--accent);
-  color: var(--accent-ink);
-  font-weight: 700;
-}
-
 .modal__message {
   padding: 2rem;
   text-align: center;

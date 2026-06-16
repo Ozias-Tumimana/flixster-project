@@ -73,8 +73,8 @@ They reset on reload (no persistence required; an optional localStorage polish s
 | `detailsLoading` | `boolean` | `true` | `true` while details are in flight. |
 | `detailsError` | `string\|null` | `null` | On details fetch failure. |
 | `trailerKey` | `string\|null` | `null` | First YouTube `Trailer` from `details.videos.results`. |
-| `aiInsight` | `string\|null` | `null` | OpenRouter completion text (on button click). |
-| `loadingInsight` | `boolean` | `false` | `true` while the AI request is in flight. |
+| `aiInsight` | `string\|null` | `null` | OpenRouter completion text (auto-fetched once details load). |
+| `loadingInsight` | `boolean` | `true` | `true` while the AI request is in flight. |
 
 ---
 
@@ -97,8 +97,8 @@ TMDb /now_playing | /search ──fetch (deps: mode,searchQuery,page)──▶ A
 **Open details:** `MovieCard onClick` calls `App.onCardClick(id)`, which calls `setSelectedMovieId(id)`, which renders
 `<MovieModal movieId=…>`. On mount or `movieId` change the modal makes **two requests** (with an
 `ignore`-flag cleanup, since StrictMode double-invokes in dev): (1) `GET /movie/{id}?append_to_response=videos`
-sets `details` and derives `trailerKey` from `details.videos.results`; (2) **when the user clicks
-"Get AI Recommendation"**, a `POST` to OpenRouter sets `aiInsight`. Closing the modal (`onClose` calls
+sets `details` and derives `trailerKey` from `details.videos.results`; (2) once `details` loads, a
+second effect automatically `POST`s to OpenRouter and sets `aiInsight`. Closing the modal (`onClose` calls
 `setSelectedMovieId(null)`) unmounts it and discards local state.
 
 **Favorites/Watched flow up:** the Sets live in App. Cards and the modal receive `isFavorite`/`isWatched` booleans
@@ -162,9 +162,11 @@ Body: `{ models: FREE_MODELS, messages:[system,user], temperature:0.7, max_token
 `FREE_MODELS` is `["openrouter/free"]`. That slug routes the request across OpenRouter's pool of
 free models, so the app uses whichever free model is currently available without pinning a specific one.
 The `models` array still supports fallthrough, so extra slugs can be added later if needed.
-Parse `data?.choices?.[0]?.message?.content?.trim()` and fall back on empty. **Trigger:** lazy, behind a
-"Get AI Recommendation" button (this saves free-tier quota and avoids a 429 on every modal open), so
-`loadingInsight` starts `false` until the click. It resets on close when the modal unmounts.
+Parse `data?.choices?.[0]?.message?.content?.trim()` and fall back on empty. **Trigger:** automatic. A
+second effect fires once `details` loads, so the recommendation appears as soon as the modal opens and the
+outbound `openrouter.ai` request is visible in the Network tab on open (the grader requirement).
+`loadingInsight` starts `true` and shows "Generating recommendation…" until the call settles. State resets
+on close when the modal unmounts.
 
 Key security: `VITE_OPENROUTER_API_KEY` lives in `.env` (gitignored), and `.env.example` lists both var names.
 

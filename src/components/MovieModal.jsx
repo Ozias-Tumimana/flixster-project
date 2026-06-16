@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, Sparkles, Heart, Eye, Star } from "lucide-react";
 import { fetchMovieDetails, pickTrailerKey, backdropUrl } from "../api/tmdb";
 import { getMovieInsight } from "../api/openrouter";
@@ -29,7 +29,7 @@ const MovieModal = ({
   const [trailerKey, setTrailerKey] = useState(null);
 
   const [aiInsight, setAiInsight] = useState(null);
-  const [loadingInsight, setLoadingInsight] = useState(false);
+  const [loadingInsight, setLoadingInsight] = useState(true);
 
   const dialogRef = useRef(null);
   const closeBtnRef = useRef(null);
@@ -100,18 +100,29 @@ const MovieModal = ({
     };
   }, [onClose]);
 
-  // Lazy AI fetch — only on button click (saves free-tier quota).
-  const handleGetInsight = useCallback(async () => {
+  // AI recommendation fires automatically once details load, so the request is
+  // visible in the Network tab as soon as the modal opens. getMovieInsight never
+  // throws: it returns FALLBACK_INSIGHT on any failure, so the UI always settles.
+  useEffect(() => {
     if (!details) return;
+    let ignore = false;
+    setAiInsight(null);
     setLoadingInsight(true);
+
     const genres = (details.genres ?? []).map((g) => g.name).join(", ");
-    const text = await getMovieInsight({
+    getMovieInsight({
       title: details.title,
       genres,
       overview: details.overview,
+    }).then((text) => {
+      if (ignore) return;
+      setAiInsight(text);
+      setLoadingInsight(false);
     });
-    setAiInsight(text);
-    setLoadingInsight(false);
+
+    return () => {
+      ignore = true;
+    };
   }, [details]);
 
   // Click on the backdrop (outside the dialog) closes the modal.
@@ -233,20 +244,12 @@ const MovieModal = ({
                 <h3 className="modal__ai-heading">
                   <Sparkles size={16} aria-hidden="true" /> Watch Recommendation
                 </h3>
-                {aiInsight ? (
-                  <p className="modal__ai-text">{aiInsight}</p>
-                ) : loadingInsight ? (
+                {loadingInsight ? (
                   <p className="modal__ai-text modal__ai-text--loading">
                     Generating recommendation…
                   </p>
                 ) : (
-                  <button
-                    type="button"
-                    className="modal__ai-btn"
-                    onClick={handleGetInsight}
-                  >
-                    Get AI Recommendation
-                  </button>
+                  <p className="modal__ai-text">{aiInsight}</p>
                 )}
               </section>
             </div>
