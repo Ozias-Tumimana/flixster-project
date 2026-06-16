@@ -211,3 +211,19 @@ is kept for self-documentation (there is no theme switching — an earlier multi
 `rgba(var(--bg-rgb), X)` so opacity composites over the real background color. **Keep `--bg-rgb` in sync
 with `--bg`.** (Media/content overlays meant to stay constant — `#000` behind video, white glass hero/header
 controls, black modal/badge scrims — are intentionally left literal.)
+
+---
+
+## 8. Deployment (Render static site)
+
+Deployed as a **Render Static Site** via [render.yaml](render.yaml) (Blueprint / config-as-code):
+
+- **Type:** `type: web` + `runtime: static`; **Build:** `npm install && npm run build`;
+  **Publish dir:** `./dist`; **Branch:** `main` (auto-deploys on every push).
+- **SPA fallback:** a `routes` rewrite (`source: /*` → `destination: /index.html`) so reloads/deep
+  links resolve. (No client router today, but this keeps deep links robust and is standard for Vite SPAs.)
+- **Env vars:** `VITE_API_KEY` + `VITE_OPENROUTER_API_KEY` declared with `sync: false` — values are set in
+  the Render dashboard, never committed. **Caveat:** `VITE_` vars are baked into the client bundle at build
+  time, so they ship publicly in the JS — acceptable for the free-tier TMDb/OpenRouter keys here, but a
+  production app would proxy these through a backend. The AI helper sends `HTTP-Referer:
+  window.location.origin` so attribution reflects the deployed URL, not `localhost`.

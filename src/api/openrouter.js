@@ -37,7 +37,9 @@ export async function getMovieInsight({ title, genres, overview }) {
       headers: {
         Authorization: `Bearer ${key}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "http://localhost:5173",
+        // OpenRouter uses this for request attribution; reflect the real origin
+        // (localhost in dev, the Render URL in prod) instead of a hardcoded host.
+        "HTTP-Referer": window.location.origin,
         "X-Title": "Flixster",
       },
       body: JSON.stringify({

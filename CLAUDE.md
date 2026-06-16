@@ -11,7 +11,7 @@ against a written spec the student authored *before* implementation.
 
 - **Stack:** React 18.2, Vite 5, Node 24. No router, no backend, no test runner configured.
 - **Scope:** all required features + AI Watch Recommendation + stretch (favorites, watched,
-  sidebar filter, embedded trailer). **Render deployment is intentionally excluded.**
+  sidebar filter, embedded trailer) + **Render static-site deployment** ([render.yaml](render.yaml)).
 - **Spec:** [planning.md](planning.md) is the source of truth — component architecture, state
   architecture, API contracts, data flow, and the AI feature spec. It is a living document.
 

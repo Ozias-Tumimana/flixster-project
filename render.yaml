@@ -1,0 +1,27 @@
+# Render Blueprint — deploys Flixster as a static site (Vite build → dist/).
+# Docs: https://render.com/docs/blueprint-spec
+#
+# The two VITE_ keys are marked `sync: false`, so their values are NOT stored
+# here (never commit secrets). Render prompts for them on first Blueprint
+# creation; afterward set/rotate them under the service's Environment tab.
+# NOTE: VITE_ vars are baked into the client bundle at build time and are
+# therefore publicly visible in the shipped JS — fine for this assignment's
+# free-tier TMDb/OpenRouter keys, but don't reuse a sensitive key here.
+services:
+  - type: web
+    runtime: static
+    name: flixster
+    branch: main
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    # SPA fallback: serve index.html for any path that isn't a real file, so
+    # reloads/deep links work. Render skips this rule when a file exists.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_KEY
+        sync: false
+      - key: VITE_OPENROUTER_API_KEY
+        sync: false
