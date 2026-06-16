@@ -61,16 +61,16 @@ Deployed Application (optional): [Flixster Deployed Site](https://flixster-0jnv.
     - [X] Movie grid
     - [X] Footer section
     - [ ] **VIDEO WALKTHROUGH SPECIAL INSTRUCTIONS**: To ease the grading process, please use the [color contrast checker](https://webaim.org/resources/contrastchecker/) to demonstrate to the grading team that text and background colors on your website have appropriate contrast. The Contrast Ratio should be above 4.5:1 and should have a green box surrounding it. 
-- [ ] **Planning Documentation**
-  - [ ] Repository includes a `planning.md` file with:
-    - [ ] A **Component Architecture** section listing at least 5 components, each with its responsibility, what it renders, and its props.
-    - [ ] An **API Contracts** section documenting at least 2 TMDb endpoints used, with URL, query parameters, and relevant response fields for each.
-    - [ ] A **State Architecture** section listing state variables with name, type, initial value, owner component, and what user action triggers an update.
-    - [ ] A **Data Flow** section (paragraph or diagram) explaining how data flows from the TMDb API response through the component hierarchy to the `MovieCard`, including any transformations.
-- [ ] **AI Watch Recommendation**
-  - [ ] When a movie's detail modal is opened, an AI-generated watch recommendation is displayed alongside the movie details.
-  - [ ] A loading state is shown while the AI response is being generated, and a graceful fallback message is shown if the AI call fails.
-  - [ ] `planning.md` includes an **AI Feature Spec** documenting role, task, inputs, output format, constraints, and failure behavior for the AI call.
+- [X] **Planning Documentation**
+  - [X] Repository includes a `planning.md` file with:
+    - [X] A **Component Architecture** section listing at least 5 components, each with its responsibility, what it renders, and its props.
+    - [X] An **API Contracts** section documenting at least 2 TMDb endpoints used, with URL, query parameters, and relevant response fields for each.
+    - [X] A **State Architecture** section listing state variables with name, type, initial value, owner component, and what user action triggers an update.
+    - [X] A **Data Flow** section (paragraph or diagram) explaining how data flows from the TMDb API response through the component hierarchy to the `MovieCard`, including any transformations.
+- [X] **AI Watch Recommendation**
+  - [X] When a movie's detail modal is opened, an AI-generated watch recommendation is displayed alongside the movie details.
+  - [X] A loading state is shown while the AI response is being generated, and a graceful fallback message is shown if the AI call fails.
+  - [X] `planning.md` includes an **AI Feature Spec** documenting role, task, inputs, output format, constraints, and failure behavior for the AI call.
   - [ ] **VIDEO WALKTHROUGH SPECIAL INSTRUCTIONS**: To ease the grading process, open your browser's DevTools **Network** tab, trigger the AI recommendation (open a movie modal), and show the outbound request going **directly to an AI API URL** (e.g., `openrouter.ai`) — not to a backend server URL. Graders need to see this call in the Network tab to award full credit.
 
 #### STRETCH FEATURES
@@ -119,20 +119,23 @@ Deployed Application (optional): [Flixster Deployed Site](https://flixster-0jnv.
 
 * Did the topics discussed in your labs prepare you to complete the assignment? Be specific, which features in your weekly assignment did you feel unprepared to complete?
 
-Add your response here
+The labs covered the core React I needed: useState, useEffect, passing props down, and lifting state up, so the movie grid and search felt familiar. Fetching from TMDb and rendering the results was a direct extension of what we practiced. The parts I felt less ready for were things the labs did not touch directly. Managing favorites and watched as Set objects and toggling them immutably took some trial and error before the UI re-rendered correctly. The modal was also new territory, since getting focus trapping, Escape to close, and body scroll lock right took more reading than the labs prepared me for. The AI recommendation call to OpenRouter was the biggest jump, because I had to figure out the request shape, handle the free-tier rate limits, and write a fallback for when the call fails.
+
 
 * If you had more time, what would you have done differently? Would you have added additional features? Changed the way your project responded to a particular event, etc.
   
-Add your response here
+I would have added localStorage so favorites and watched survive a page reload instead of resetting every time. I would also debounce the search input so it queries as you type rather than only on submit, and I would add a small toast when a movie is favorited instead of relying only on the icon color change. On the code side, I leaned heavily on App owning almost all the state, and with more time I would have pulled some of that into a custom hook to keep App smaller and easier to read.
+
 
 * Reflect on your project demo, what went well? Were there things that maybe didn't go as planned? Did you notice something that your peer did that you would like to try next time?
 
-Add your response here
+The demo went well overall. The search, sort, modal, trailer, and the AI recommendation all worked live, and showing the OpenRouter call going straight to the AI URL in the Network tab landed clearly. The thing that did not go as smoothly was the AI call occasionally being slow on the free tier, so the loading state ran longer than I expected during the demo. A peer showed off skeleton loaders that made their grid feel faster while data loaded, and I want to lean into that pattern more next time since I already have a Skeleton component I could use more aggressively.
+
 
 ### Open-source libraries used
 
-- Add any links to open-source libraries used in your project.
+- Add any mentions to open-source libraries used in your project.
+Open-source libraries used: React, Vite, lucide-react (icons).
 
 ### Shout out
-
-Give a shout out to somebody from your cohort that especially helped you during your project. This can be a fellow peer, instructor, TA, mentor, etc.
+Shout out David for presentation help 
