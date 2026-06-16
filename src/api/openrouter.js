@@ -4,13 +4,11 @@
 
 const ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 
-// Free models in priority order. OpenRouter's `models` array auto-falls-through
-// to the next entry when one is down, rate-limited, or errors (free tiers 429
-// often), so we effectively use "whichever free model is currently available."
-// There is no single auto-free slug — `:free` is always a suffix on a specific
-// model, and `openrouter/auto` routes among PAID models. Slugs verified against
-// https://openrouter.ai/api/v1/models; if one is retired the array degrades
-// gracefully to the next, then to FALLBACK_INSIGHT.
+// The `openrouter/free` slug routes the request across OpenRouter's pool of
+// free models, so we use whichever free model is currently available instead of
+// pinning a specific one (pinning a single `:free` slug hit 429s when that model
+// was busy). The `models` array still supports fallthrough, so extra slugs can be
+// added here later; if everything fails we degrade to FALLBACK_INSIGHT.
 const FREE_MODELS = [
   "openrouter/free"
 ];
