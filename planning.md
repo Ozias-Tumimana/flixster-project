@@ -159,10 +159,13 @@ const buildUserPrompt = ({ title, genres, overview }) =>
 ```
 
 Body: `{ models: FREE_MODELS, messages:[system,user], temperature:0.7, max_tokens:160 }`, where
-`FREE_MODELS` is `["openrouter/free"]`. That slug routes the request across OpenRouter's pool of
-free models, so the app uses whichever free model is currently available without pinning a specific one.
-The `models` array still supports fallthrough, so extra slugs can be added later if needed.
-Parse `data?.choices?.[0]?.message?.content?.trim()` and fall back on empty. **Trigger:** automatic. A
+`FREE_MODELS` is a priority-ordered list of free **instruct** slugs (max 3, an OpenRouter limit), currently
+`["liquid/lfm-2.5-1.2b-instruct:free", "qwen/qwen3-next-80b-a3b-instruct:free", "meta-llama/llama-3.3-70b-instruct:free"]`.
+OpenRouter's `models` array auto-falls-through to the next entry when one is down or rate-limited. Do **not**
+use the `openrouter/free` pool slug: it routes to whatever free model is up, including reasoning and
+content-safety models that return empty or junk `content` (e.g. `"User Safety: safe"`), which silently
+degrades to the fallback. Parse `data?.choices?.[0]?.message?.content?.trim()`; on empty content `console.error`
+the model + payload and return the fallback (so it is never silent). **Trigger:** automatic. A
 second effect fires once `details` loads, so the recommendation appears as soon as the modal opens and the
 outbound `openrouter.ai` request is visible in the Network tab on open (the grader requirement).
 `loadingInsight` starts `true` and shows "Generating recommendation…" until the call settles. State resets

@@ -4,13 +4,19 @@
 
 const ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 
-// The `openrouter/free` slug routes the request across OpenRouter's pool of
-// free models, so we use whichever free model is currently available instead of
-// pinning a specific one (pinning a single `:free` slug hit 429s when that model
-// was busy). The `models` array still supports fallthrough, so extra slugs can be
-// added here later; if everything fails we degrade to FALLBACK_INSIGHT.
+// Pinned free *instruct* models in priority order. OpenRouter's `models` array
+// auto-falls-through to the next entry when one is down or rate-limited.
+// NOTE: do NOT use the `openrouter/free` pool slug — it routes to whatever free
+// model is up, including reasoning and content-safety models that return empty or
+// junk content (e.g. "User Safety: safe"), which silently degrades to the fallback.
+// Instruct models are the only ones that reliably produce the chat response we want.
+// Slugs verified live against https://openrouter.ai/api/v1/models; if one is
+// retired the array degrades to the next, then to FALLBACK_INSIGHT.
+// OpenRouter caps this array at 3 entries — keep it at 3 or fewer.
 const FREE_MODELS = [
-  "openrouter/free"
+  "liquid/lfm-2.5-1.2b-instruct:free",
+  "qwen/qwen3-next-80b-a3b-instruct:free",
+  "meta-llama/llama-3.3-70b-instruct:free",
 ];
 
 export const FALLBACK_INSIGHT =
@@ -68,7 +74,13 @@ export async function getMovieInsight({ title, genres, overview }) {
 
     const data = await res.json();
     const text = data?.choices?.[0]?.message?.content?.trim();
-    return text || FALLBACK_INSIGHT;
+    if (!text) {
+      // 2xx but empty content (e.g. a reasoning/safety model that put everything
+      // in `reasoning` and left `content` blank). Log so it's not a silent fallback.
+      console.error("OpenRouter returned empty content from", data?.model, data);
+      return FALLBACK_INSIGHT;
+    }
+    return text;
   } catch (err) {
     console.error("OpenRouter request failed:", err);
     return FALLBACK_INSIGHT;
