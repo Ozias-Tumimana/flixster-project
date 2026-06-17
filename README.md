@@ -20,7 +20,7 @@ Deployed Application (optional): [Flixster Deployed Site](https://flixster-0jnv.
   - [X] Users can load more current movies by clicking a button which adds more movies to the grid without reloading the entire page. 
 - [X] **Search Functionality**
   - [X] Users can use a search bar to search for movies by title.
-  - [ ] The search bar should include:
+  - [X] The search bar should include:
     - [X] Text input field
     - [X] Submit/Search button
     - [X] Clear button
@@ -30,8 +30,8 @@ Deployed Application (optional): [Flixster Deployed Site](https://flixster-0jnv.
   - [X] Users can click the Clear button. When clicked:
     - [X] All text in the text input field is deleted
     - [X] The most recent search results are cleared from the text input field and the grid view and all current movies are displayed in a grid view
-- [ ] **Design Features**
-  - [ ] Website implements all of the following accessibility features:
+- [X] **Design Features**
+  - [X] Website implements all of the following accessibility features:
     - [X] Semantic HTML
     - [X] [Color contrast](https://webaim.org/resources/contrastchecker/)
     - [X] Alt text for images 
@@ -48,19 +48,19 @@ Deployed Application (optional): [Flixster Deployed Site](https://flixster-0jnv.
       - [X] Release date
       - [X] Genres
       - [X] An overview
-  - [ ] Users can use a drop-down menu to sort movies.
-    - [ ] Drop-down allows movies to be sorted by:
+  - [X] Users can use a drop-down menu to sort movies.
+    - [X] Drop-down allows movies to be sorted by:
       - [X] Title (alphabetic, A-Z)
       - [X] Release date (chronologically, most recent to oldest)
       - [X] Vote average (descending, highest to lowest)
     - [X] When a sort option is clicked, movies display in a grid according to selected criterion.
-  - [ ] Website displays:
+  - [X] Website displays:
     - [X] Header section
     - [X] Banner section
     - [X] Search bar
     - [X] Movie grid
     - [X] Footer section
-    - [ ] **VIDEO WALKTHROUGH SPECIAL INSTRUCTIONS**: To ease the grading process, please use the [color contrast checker](https://webaim.org/resources/contrastchecker/) to demonstrate to the grading team that text and background colors on your website have appropriate contrast. The Contrast Ratio should be above 4.5:1 and should have a green box surrounding it. 
+    - [X] **VIDEO WALKTHROUGH SPECIAL INSTRUCTIONS**: To ease the grading process, please use the [color contrast checker](https://webaim.org/resources/contrastchecker/) to demonstrate to the grading team that text and background colors on your website have appropriate contrast. The Contrast Ratio should be above 4.5:1 and should have a green box surrounding it. 
 - [X] **Planning Documentation**
   - [X] Repository includes a `planning.md` file with:
     - [X] A **Component Architecture** section listing at least 5 components, each with its responsibility, what it renders, and its props.
@@ -71,7 +71,7 @@ Deployed Application (optional): [Flixster Deployed Site](https://flixster-0jnv.
   - [X] When a movie's detail modal is opened, an AI-generated watch recommendation is displayed alongside the movie details.
   - [X] A loading state is shown while the AI response is being generated, and a graceful fallback message is shown if the AI call fails.
   - [X] `planning.md` includes an **AI Feature Spec** documenting role, task, inputs, output format, constraints, and failure behavior for the AI call.
-  - [ ] **VIDEO WALKTHROUGH SPECIAL INSTRUCTIONS**: To ease the grading process, open your browser's DevTools **Network** tab, trigger the AI recommendation (open a movie modal), and show the outbound request going **directly to an AI API URL** (e.g., `openrouter.ai`) — not to a backend server URL. Graders need to see this call in the Network tab to award full credit.
+  - [X] **VIDEO WALKTHROUGH SPECIAL INSTRUCTIONS**: To ease the grading process, open your browser's DevTools **Network** tab, trigger the AI recommendation (open a movie modal), and show the outbound request going **directly to an AI API URL** (e.g., `openrouter.ai`) — not to a backend server URL. Graders need to see this call in the Network tab to award full credit.
 
 #### STRETCH FEATURES
 
@@ -86,7 +86,7 @@ Deployed Application (optional): [Flixster Deployed Site](https://flixster-0jnv.
   - [X] There should be visual element (such as a heart icon) on each movie's tile to show whether or not the movie has been favorited.
   - [X] If the movie is not favorited:
     - [X] Clicking on the visual element should mark the movie as favorited
-    - [ X There should be visual feedback (such as the heart turning a different color) to show that the movie has been favorited by the user.
+    - [X] There should be visual feedback (such as the heart turning a different color) to show that the movie has been favorited by the user.
   - [X] If the movie is already favorited:
     - [X] Clicking on the visual element should mark the movie as *not* favorited.
     - [X] There should be visual feedback (such as the heart turning a different color) to show that the movie has been unfavorited. 
@@ -111,9 +111,7 @@ Deployed Application (optional): [Flixster Deployed Site](https://flixster-0jnv.
 
 ### Walkthrough Video
 
-`TODO://` Paste the **shareable link** to your animated app walkthrough below (replace `ADD_LOOM_LINK_HERE`). GitHub markdown won't render an embedded Loom player, so a plain link is what graders will use. Make sure the link is public and playable before submitting. Ensure your walkthrough showcases the presence and/or functionality of all features you implemented above (check them off as you film!). Pay attention to any **VIDEO WALKTHROUGH SPECIAL INSTRUCTIONS** checkboxes listed above to ensure graders see the full functionality of your website. (🚫 Remove this paragraph after adding your walkthrough link.)
-
-**Walkthrough video:** [Flixster Walkthrough](ADD_LOOM_LINK_HERE)
+**Walkthrough video:** [Flixster Walkthrough](https://www.loom.com/share/5da235d64225458eb41eca6498c5cb20)
 
 ### Reflection
 
